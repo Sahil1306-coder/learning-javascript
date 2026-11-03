@@ -1301,11 +1301,18 @@ export default function AdminPanel({ onBack }) {
             aria-modal="true"
           >
             <div className="admin-modal-header">
-              <h3>{editingProduct ? 'Edit Product' : 'Add New Product to Website'}</h3>
+              <div className="admin-modal-title-wrap">
+                <span className="admin-modal-title-icon">🧪</span>
+                <div>
+                  <h3>{editingProduct ? 'Edit Product' : 'Add New Product to Website'}</h3>
+                  <p className="admin-modal-subtitle">Configure specifications and publish to the live Shivtek catalog</p>
+                </div>
+              </div>
               <button
                 type="button"
                 className="btn-close-modal"
                 onClick={() => setIsModalOpen(false)}
+                aria-label="Close modal"
               >
                 ✕
               </button>
@@ -1420,40 +1427,50 @@ export default function AdminPanel({ onBack }) {
                   </div>
 
                   <div className="admin-form-group">
-                    <label className="switch-label">
-                      <span className="switch-toggle">
-                        <input
-                          type="checkbox"
-                          checked={formData.published}
-                          onChange={(e) =>
-                            setFormData({
-                              ...formData,
-                              published: e.target.checked,
-                            })
-                          }
-                        />
-                        <span className="slider" />
-                      </span>
-                      <span>Publish on Website Immediately</span>
-                    </label>
+                    <div className="admin-toggle-card">
+                      <label className="switch-label">
+                        <span className="switch-toggle">
+                          <input
+                            type="checkbox"
+                            checked={formData.published}
+                            onChange={(e) =>
+                              setFormData({
+                                ...formData,
+                                published: e.target.checked,
+                              })
+                            }
+                          />
+                          <span className="slider" />
+                        </span>
+                        <div className="switch-text-wrap">
+                          <span className="switch-title">Publish on Website Immediately</span>
+                          <span className="switch-desc">Make this product live for buyers across catalog and search</span>
+                        </div>
+                      </label>
+                    </div>
                   </div>
                 </div>
 
                 {/* Live Card Preview (Right side) */}
                 <div className="preview-pane">
-                  <h4>Live Website Preview</h4>
+                  <div className="preview-pane-header">
+                    <span className="preview-live-dot" />
+                    <h4>Live Website Preview</h4>
+                  </div>
                   <div className="mock-card">
-                    <img
-                      src={resolveImageUrl(formData.image)}
-                      alt="Preview"
-                      className="mock-card-img"
-                      onError={(e) => {
-                        e.target.src =
-                          'https://shivtekspechemi.com/wp-content/uploads/2026/07/card-image-30.webp';
-                      }}
-                    />
+                    <div className="mock-card-img-wrap">
+                      <img
+                        src={resolveImageUrl(formData.image)}
+                        alt="Preview"
+                        className="mock-card-img"
+                        onError={(e) => {
+                          e.target.src =
+                            'https://shivtekspechemi.com/wp-content/uploads/2026/07/card-image-30.webp';
+                        }}
+                      />
+                    </div>
                     <div className="mock-card-body">
-                      <span className="mock-card-category">{formData.category}</span>
+                      <span className="mock-card-category">{formData.category || 'General'}</span>
                       <h4 className="mock-card-title">
                         {formData.name || 'Product Brand Name'}
                       </h4>
@@ -1461,8 +1478,8 @@ export default function AdminPanel({ onBack }) {
                         {formData.detail || 'Technical Specification'}
                       </span>
                       <div className="mock-card-footer">
-                        <span>{formData.price > 0 ? `₹${formData.price}` : 'Request Quote'}</span>
-                        <span>Explore →</span>
+                        <span className="mock-card-price">{formData.price > 0 ? `₹${formData.price}` : 'Quote on Request'}</span>
+                        <span className="mock-card-action">Explore →</span>
                       </div>
                     </div>
                   </div>
@@ -1472,7 +1489,7 @@ export default function AdminPanel({ onBack }) {
               <div className="admin-modal-footer">
                 <button
                   type="button"
-                  className="admin-btn-secondary"
+                  className="admin-modal-btn-cancel"
                   onClick={() => setIsModalOpen(false)}
                   disabled={submitting}
                 >
@@ -1480,7 +1497,7 @@ export default function AdminPanel({ onBack }) {
                 </button>
                 <button
                   type="submit"
-                  className="admin-btn-primary"
+                  className="admin-btn-primary admin-modal-btn-submit"
                   disabled={submitting}
                 >
                   {submitting
