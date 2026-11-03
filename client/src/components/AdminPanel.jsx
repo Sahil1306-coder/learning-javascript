@@ -579,7 +579,7 @@ export default function AdminPanel({ onBack }) {
                   <h4>Live On Website</h4>
                   <span>{publishedCount}</span>
                 </div>
-                <div className="stat-icon" style={{ background: '#ecfdf5', color: '#059669' }}>
+                <div className="stat-icon" style={{ background: '#eff6ff', color: '#0061FE' }}>
                   <svg
                     width="22"
                     height="22"
@@ -602,7 +602,7 @@ export default function AdminPanel({ onBack }) {
                   <h4>Active Categories</h4>
                   <span>{categoriesCount}</span>
                 </div>
-                <div className="stat-icon" style={{ background: '#eff6ff', color: '#2563eb' }}>
+                <div className="stat-icon" style={{ background: '#eff6ff', color: '#0061FE' }}>
                   🏷️
                 </div>
               </div>
