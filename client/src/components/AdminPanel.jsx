@@ -580,7 +580,20 @@ export default function AdminPanel({ onBack }) {
                   <span>{publishedCount}</span>
                 </div>
                 <div className="stat-icon" style={{ background: '#ecfdf5', color: '#059669' }}>
-                  ✓
+                  <svg
+                    width="22"
+                    height="22"
+                    viewBox="0 0 520 520"
+                    fill="currentColor"
+                    aria-hidden="true"
+                  >
+                    <g>
+                      <path
+                        d="M79.423 240.755a47.529 47.529 0 0 0-36.737 77.522l120.73 147.894a43.14 43.14 0 0 0 36.066 16.009c14.654-.787 27.884-8.626 36.319-21.515L486.588 56.773a6 6 0 0 1 .128-.2c2.353-3.613 1.59-10.773-3.267-15.271a13.32 13.32 0 0 0-19.362 1.343q-.135.166-.278.327L210.887 328.736a10.96 10.96 0 0 1-15.585.843l-83.94-76.386a47.32 47.32 0 0 0-31.939-12.438"
+                        fill="currentColor"
+                      />
+                    </g>
+                  </svg>
                 </div>
               </div>
 
