@@ -1420,18 +1420,6 @@ export default function AdminPanel({ onBack }) {
                     </div>
                   </div>
 
-                  <div className="admin-form-group">
-                    <label>Indicative Price (₹/MT or Quote)</label>
-                    <input
-                      type="number"
-                      className="admin-input"
-                      placeholder="0 for 'Quote on Request'"
-                      value={formData.price}
-                      onChange={(e) =>
-                        setFormData({ ...formData, price: e.target.value })
-                      }
-                    />
-                  </div>
 
                   <div className="admin-form-group">
                     <label>Brief Description &amp; Applications</label>
