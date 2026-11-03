@@ -2,9 +2,9 @@
 :root {
   --admin-bg: #f4f6f8;
   --admin-card: #ffffff;
-  --admin-primary: #0f4c3a;
-  --admin-primary-hover: #0a3528;
-  --admin-accent: #16a34a;
+  --admin-primary: linear-gradient(180deg, #3380FE 0%, #0061FE 100%);
+  --admin-primary-hover: linear-gradient(180deg, #2570ee 0%, #0050d4 100%);
+  --admin-accent: #0061fe;
   --admin-accent-light: #dcfce7;
   --admin-text-main: #0f172a;
   --admin-text-muted: #64748b;
@@ -95,9 +95,9 @@
 }
 
 .admin-btn-back {
-  background: #ffffff;
-  border: 1px solid var(--admin-border);
-  color: #334155;
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  border: none;
+  color: #ffffff !important;
   padding: 8px 16px;
   border-radius: 7px;
   font-size: 13px;
@@ -108,11 +108,14 @@
   gap: 6px;
   transition: all 0.2s;
   text-decoration: none;
+  box-shadow: 0 2px 6px rgba(0, 97, 254, 0.2);
 }
 
 .admin-btn-back:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 10px rgba(0, 97, 254, 0.3);
+  color: #ffffff !important;
 }
 
 /* Container */
@@ -230,8 +233,8 @@
 }
 
 .admin-btn-primary {
-  background: var(--admin-primary);
-  color: #ffffff;
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  color: #ffffff !important;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
@@ -242,28 +245,34 @@
   align-items: center;
   gap: 8px;
   transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(15, 76, 58, 0.2);
+  box-shadow: 0 4px 14px rgba(0, 97, 254, 0.3);
 }
 
 .admin-btn-primary:hover {
-  background: var(--admin-primary-hover);
+  background: linear-gradient(180deg, #2570ee 0%, #0050d4 100%) !important;
   transform: translateY(-1px);
+  filter: brightness(1.08);
+  box-shadow: 0 6px 18px rgba(0, 97, 254, 0.4);
 }
 
 .admin-btn-secondary {
-  background: #f1f5f9;
-  color: #334155;
-  border: 1px solid var(--admin-border);
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  color: #ffffff !important;
+  border: none;
   padding: 9px 16px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s;
+  box-shadow: 0 2px 6px rgba(0, 97, 254, 0.2);
 }
 
 .admin-btn-secondary:hover {
-  background: #e2e8f0;
+  filter: brightness(1.1);
+  transform: translateY(-1px);
+  color: #ffffff !important;
+  box-shadow: 0 4px 10px rgba(0, 97, 254, 0.3);
 }
 
 /* Products Table */
@@ -983,15 +992,21 @@ input:checked + .slider:before {
 }
 
 .cms-preview-btn {
-  background: #1877f2;
-  color: #ffffff;
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  color: #ffffff !important;
   border: none;
   padding: 10px 20px;
   border-radius: 8px;
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 12px rgba(24, 119, 242, 0.35);
+  box-shadow: 0 4px 12px rgba(0, 97, 254, 0.35);
+  transition: filter 0.2s ease, transform 0.2s ease;
+}
+
+.cms-preview-btn:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
 }
 
 /* Advantages Grid */
