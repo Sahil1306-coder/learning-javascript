@@ -784,6 +784,14 @@ input:checked + .slider:before {
   color: #0f172a;
 }
 
+.admin-tab-icon-svg {
+  width: 15px;
+  height: 15px;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+}
+
 .admin-nav-tab.active {
   background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
   color: #ffffff !important;
