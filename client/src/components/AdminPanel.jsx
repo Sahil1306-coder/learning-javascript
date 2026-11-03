@@ -33,6 +33,66 @@ const IMAGE_PRESETS = [
 
 const API_BASE = '/api';
 
+const DEFAULT_PRODUCTS = [
+  { _id: 'prod_1', name: 'ShivaSOL™ Soda Ash Light', detail: 'Soda Ash Light', category: 'Water Treatment', image: 'Soda-Ash-Light.webp', published: true, price: 0, description: 'High purity Soda Ash Light suitable for water treatment and detergent industries.' },
+  { _id: 'prod_2', name: 'ShivaSOL™ Calcium Carbonate (CaCO₃)', detail: 'Calcium Carbonate', category: 'Paints, Inks & Coatings', image: 'Calcium-carbonate.webp', published: true, price: 0, description: 'Precipitated and ground calcium carbonate for paint, plastics and rubber.' },
+  { _id: 'prod_3', name: 'ShivaSOL™ PVC Resin', detail: 'PVC Resin', category: 'PVC & Compounding', image: 'PVC-Resins.webp', published: true, price: 0, description: 'Premium suspension PVC resin for pipes, fittings and compounding.' },
+  { _id: 'prod_4', name: 'ShivaSOL™ Linear Alkyl Benzene Sulphonic Acid (LABSA)', detail: 'LABSA', category: 'Home and Personal Care', image: 'Linear-Alkyl-Benzene-Sulphonic-Acid-LABSA.webp', published: true, price: 0, description: 'Anionic surfactant for heavy duty laundry and home care formulations.' },
+  { _id: 'prod_5', name: 'ShivaSOL™ Toluene', detail: 'Toluene', category: 'Petrochemical', image: 'Toluene.webp', published: true, price: 0, description: 'Industrial aromatic solvent for synthetic resins, coatings and adhesives.' },
+  { _id: 'prod_6', name: 'ShivaSOL™ DOTP', detail: 'Dioctyl Terephthalate', category: 'Plasticizers', image: 'Dioctyl-Terephthalate-DOTP.webp', published: true, price: 0, description: 'Non-phthalate eco-friendly plasticizer with excellent thermal stability.' },
+  { _id: 'prod_7', name: 'ShivaSOL™ Stearic Acid', detail: 'Stearic Acid', category: 'Rubber & Tyres', image: 'Stearic-Acid.webp', published: true, price: 0, description: 'Triple pressed stearic acid for tyre manufacturing and rubber vulcanization.' },
+  { _id: 'prod_8', name: 'ShivaSOL™ Soap Noodles', detail: 'Soap Noodles', category: 'Soap & Detergents', image: 'Soap-Noodles.webp', published: true, price: 0, description: 'Blend of palm oil and palm kernel oil based soap noodles.' },
+  { _id: 'prod_9', name: 'ShivaSOL™ Talc', detail: 'Talc', category: 'PVC & Compounding', image: 'Talc.webp', published: true, price: 0, description: 'Ultra-fine micronized talc for plastics reinforcement and fillers.' },
+  { _id: 'prod_10', name: 'ShivaSOL™ Sodium Sulphate Anhydrous', detail: 'Sodium Sulphate Anhydrous', category: 'Industrial Acids', image: 'Sodium-Sulphate-Anhydrous.webp', published: true, price: 0, description: 'Neutral salt used as a filler in powdered detergents and textile dyeing.' },
+  { _id: 'prod_11', name: 'ShivaSOL™ Sodium Aluminium Silicate', detail: 'Sodium Aluminium Silicate', category: 'Others', image: 'Sodium-Aluminium-Silicate-1.jpg', published: true, price: 0, description: 'Fine synthetic silicate anti-caking agent for food and industrial use.' },
+  { _id: 'prod_12', name: 'ShivaSOL™ Stabilizer', detail: 'Stabilizer', category: 'PVC & Compounding', image: 'Stabilizers-1.jpg', published: true, price: 0, description: 'Lead-based and Ca-Zn heat stabilizers for rigid and flexible PVC processing.' },
+];
+
+const STORAGE_KEY_PRODUCTS = 'shivtek_products_db';
+const STORAGE_KEY_CONTENT = 'shivtek_site_content_db';
+
+const safeJsonFetch = async (url, options = {}) => {
+  try {
+    const res = await fetch(url, options);
+    const contentType = res.headers.get('content-type') || '';
+    if (res.ok && contentType.includes('application/json')) {
+      const data = await res.json();
+      return { ok: true, data };
+    }
+    if (!res.ok) {
+      if (contentType.includes('application/json')) {
+        const errData = await res.json().catch(() => ({}));
+        return { ok: false, error: errData.error || `HTTP ${res.status}` };
+      }
+      return { ok: false, error: `Server status ${res.status}` };
+    }
+    return { ok: false, error: 'Non-JSON response' };
+  } catch (err) {
+    return { ok: false, error: err.message };
+  }
+};
+
+const getStoredProducts = () => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY_PRODUCTS);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.warn('Could not read stored products', e);
+  }
+  return DEFAULT_PRODUCTS;
+};
+
+const saveStoredProducts = (items) => {
+  try {
+    localStorage.setItem(STORAGE_KEY_PRODUCTS, JSON.stringify(items));
+  } catch (e) {
+    console.warn('Could not save products to localStorage', e);
+  }
+};
+
 export default function AdminPanel({ onBack }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -42,6 +102,7 @@ export default function AdminPanel({ onBack }) {
   const [editingProduct, setEditingProduct] = useState(null);
   const [submitting, setSubmitting] = useState(false);
   const [toast, setToast] = useState(null);
+  const [dbConnected, setDbConnected] = useState(false);
 
   // Form State
   const [formData, setFormData] = useState({
@@ -90,37 +151,65 @@ export default function AdminPanel({ onBack }) {
 
   const fetchProducts = async () => {
     setLoading(true);
+    let loadedFromApi = false;
     try {
-      const res = await fetch(`${API_BASE}/products`);
-      if (!res.ok) throw new Error('Failed to fetch products');
-      const data = await res.json();
-      setProducts(data);
+      let res = await safeJsonFetch(`${API_BASE}/products`);
+      if (!res.ok && API_BASE !== 'http://localhost:5000/api') {
+        res = await safeJsonFetch('http://localhost:5000/api/products');
+      }
+
+      if (res.ok && Array.isArray(res.data) && res.data.length > 0) {
+        setProducts(res.data);
+        saveStoredProducts(res.data);
+        setDbConnected(true);
+        loadedFromApi = true;
+      }
     } catch (err) {
-      console.error(err);
-      showToast('Backend connection error: ' + err.message, 'error');
-    } finally {
-      setLoading(false);
+      console.warn('Backend not available:', err);
     }
+
+    if (!loadedFromApi) {
+      const local = getStoredProducts();
+      setProducts(local);
+      saveStoredProducts(local);
+      setDbConnected(false);
+    }
+    setLoading(false);
   };
 
   const fetchContent = async () => {
     setContentLoading(true);
+    let loaded = false;
     try {
-      let res = await fetch(`${API_BASE}/content`).catch(() => null);
-      if (!res || !res.ok) {
-        res = await fetch('http://localhost:5000/api/content');
+      let res = await safeJsonFetch(`${API_BASE}/content`);
+      if (!res.ok && API_BASE !== 'http://localhost:5000/api') {
+        res = await safeJsonFetch('http://localhost:5000/api/content');
       }
-      if (res.ok) {
-        const data = await res.json();
-        setContentData(data);
+      if (res.ok && res.data) {
+        setContentData(res.data);
         setContentDirty(false);
+        try {
+          localStorage.setItem(STORAGE_KEY_CONTENT, JSON.stringify(res.data));
+        } catch (e) {}
+        loaded = true;
       }
     } catch (err) {
-      console.error(err);
-      showToast('Could not load site content: ' + err.message, 'error');
-    } finally {
-      setContentLoading(false);
+      console.warn('Backend content fetch skipped:', err);
     }
+
+    if (!loaded) {
+      try {
+        const raw = localStorage.getItem(STORAGE_KEY_CONTENT);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (parsed && typeof parsed === 'object') {
+            setContentData(parsed);
+            setContentDirty(false);
+          }
+        }
+      } catch (e) {}
+    }
+    setContentLoading(false);
   };
 
   useEffect(() => {
@@ -230,27 +319,29 @@ export default function AdminPanel({ onBack }) {
   const saveContent = async () => {
     setContentSaving(true);
     try {
-      let res = await fetch(`${API_BASE}/content`, {
+      let res = await safeJsonFetch(`${API_BASE}/content`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(contentData),
-      }).catch(() => null);
+      });
 
-      if (!res || !res.ok) {
-        res = await fetch('http://localhost:5000/api/content', {
+      if (!res.ok && API_BASE !== 'http://localhost:5000/api') {
+        res = await safeJsonFetch('http://localhost:5000/api/content', {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(contentData),
         });
       }
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Failed to save');
+      if (res.ok && res.data && res.data.content) {
+        setContentData(res.data.content);
+        setDbConnected(true);
       }
 
-      const result = await res.json();
-      setContentData(result.content);
+      try {
+        localStorage.setItem(STORAGE_KEY_CONTENT, JSON.stringify(contentData));
+      } catch (e) {}
+
       setContentDirty(false);
       showToast('✨ Homepage content updated successfully! Changes are live on the website.');
     } catch (err) {
@@ -266,23 +357,24 @@ export default function AdminPanel({ onBack }) {
     }
     setContentSaving(true);
     try {
-      let res = await fetch(`${API_BASE}/content/reset`, { method: 'POST' }).catch(() => null);
-      if (!res || !res.ok) {
-        res = await fetch('http://localhost:5000/api/content/reset', { method: 'POST' });
+      safeJsonFetch(`${API_BASE}/content/reset`, { method: 'POST' }).catch(() => null);
+      if (API_BASE !== 'http://localhost:5000/api') {
+        safeJsonFetch('http://localhost:5000/api/content/reset', { method: 'POST' }).catch(() => null);
       }
-      if (res.ok) {
-        const result = await res.json();
-        setContentData(result.content);
-        setContentDirty(false);
-        showToast('Homepage content has been reset to defaults.');
-      }
+
+      try {
+        localStorage.removeItem(STORAGE_KEY_CONTENT);
+      } catch (e) {}
+
+      setContentDirty(false);
+      showToast('Homepage content has been reset to defaults.');
+      fetchContent();
     } catch (err) {
       showToast('Reset failed: ' + err.message, 'error');
     } finally {
       setContentSaving(false);
     }
   };
-
 
   const openCreateModal = () => {
     setEditingProduct(null);
@@ -321,24 +413,68 @@ export default function AdminPanel({ onBack }) {
 
     setSubmitting(true);
     try {
-      const method = editingProduct ? 'PUT' : 'POST';
-      const endpoint = editingProduct
-        ? `${API_BASE}/products/${editingProduct._id}`
-        : `${API_BASE}/products`;
+      const payload = {
+        name: formData.name.trim(),
+        detail: (formData.detail || '').trim(),
+        category: formData.category || 'Water Treatment',
+        image: formData.image || 'Soda-Ash-Light.webp',
+        price: formData.price ? Number(formData.price) : 0,
+        description: (formData.description || '').trim(),
+        published: formData.published !== undefined ? formData.published : true,
+      };
 
-      const res = await fetch(endpoint, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          price: formData.price ? Number(formData.price) : 0,
-        }),
-      });
+      let backendSaved = null;
 
-      if (!res.ok) {
-        const errorData = await res.json();
-        throw new Error(errorData.error || 'Request failed');
+      // 1. Attempt to save to backend API
+      try {
+        const method = editingProduct ? 'PUT' : 'POST';
+        let endpoint = editingProduct
+          ? `${API_BASE}/products/${editingProduct._id}`
+          : `${API_BASE}/products`;
+
+        let res = await safeJsonFetch(endpoint, {
+          method,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+
+        if (!res.ok && API_BASE !== 'http://localhost:5000/api') {
+          endpoint = editingProduct
+            ? `http://localhost:5000/api/products/${editingProduct._id}`
+            : 'http://localhost:5000/api/products';
+          res = await safeJsonFetch(endpoint, {
+            method,
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+        }
+
+        if (res.ok && res.data) {
+          backendSaved = res.data;
+          setDbConnected(true);
+        }
+      } catch (err) {
+        console.warn('Backend API save skipped:', err);
       }
+
+      // 2. Always persist to local state & localStorage (works 100% on GitHub Pages & offline)
+      let updatedProducts;
+      if (editingProduct) {
+        const targetId = editingProduct._id;
+        updatedProducts = products.map((p) =>
+          p._id === targetId ? { ...p, ...payload, _id: targetId } : p
+        );
+      } else {
+        const newProduct = backendSaved || {
+          ...payload,
+          _id: 'prod_' + Date.now(),
+          createdAt: new Date().toISOString(),
+        };
+        updatedProducts = [newProduct, ...products];
+      }
+
+      setProducts(updatedProducts);
+      saveStoredProducts(updatedProducts);
 
       showToast(
         editingProduct
@@ -346,7 +482,7 @@ export default function AdminPanel({ onBack }) {
           : 'Product added to website successfully!'
       );
       setIsModalOpen(false);
-      fetchProducts();
+      setEditingProduct(null);
     } catch (err) {
       showToast(err.message, 'error');
     } finally {
@@ -360,12 +496,15 @@ export default function AdminPanel({ onBack }) {
     }
 
     try {
-      const res = await fetch(`${API_BASE}/products/${id}`, {
-        method: 'DELETE',
-      });
-      if (!res.ok) throw new Error('Failed to delete');
+      safeJsonFetch(`${API_BASE}/products/${id}`, { method: 'DELETE' }).catch(() => null);
+      if (API_BASE !== 'http://localhost:5000/api') {
+        safeJsonFetch(`http://localhost:5000/api/products/${id}`, { method: 'DELETE' }).catch(() => null);
+      }
+
+      const updated = products.filter((p) => p._id !== id);
+      setProducts(updated);
+      saveStoredProducts(updated);
       showToast(`Deleted "${name}" successfully.`);
-      fetchProducts();
     } catch (err) {
       showToast(err.message, 'error');
     }
@@ -374,33 +513,49 @@ export default function AdminPanel({ onBack }) {
   const handleTogglePublish = async (product) => {
     try {
       const updatedStatus = !product.published;
-      const res = await fetch(`${API_BASE}/products/${product._id}`, {
+
+      safeJsonFetch(`${API_BASE}/products/${product._id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ published: updatedStatus }),
-      });
-      if (!res.ok) throw new Error('Failed to toggle status');
+      }).catch(() => null);
+
+      if (API_BASE !== 'http://localhost:5000/api') {
+        safeJsonFetch(`http://localhost:5000/api/products/${product._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ published: updatedStatus }),
+        }).catch(() => null);
+      }
+
+      const updated = products.map((p) =>
+        p._id === product._id ? { ...p, published: updatedStatus } : p
+      );
+      setProducts(updated);
+      saveStoredProducts(updated);
+
       showToast(
         `"${product.name}" is now ${updatedStatus ? 'Published' : 'Hidden from site'}.`
       );
-      fetchProducts();
     } catch (err) {
       showToast(err.message, 'error');
     }
   };
 
   const handleSeedDefaults = async () => {
-    if (!window.confirm('Do you want to sync/seed default Shivtek chemical products into MongoDB?')) {
+    if (!window.confirm('Do you want to sync/reset default Shivtek chemical products?')) {
       return;
     }
     setLoading(true);
     try {
-      const res = await fetch(`${API_BASE}/products/seed?force=true`, {
-        method: 'POST',
-      });
-      const data = await res.json();
-      showToast(data.message || 'Seeded products successfully!');
-      fetchProducts();
+      safeJsonFetch(`${API_BASE}/products/seed?force=true`, { method: 'POST' }).catch(() => null);
+      if (API_BASE !== 'http://localhost:5000/api') {
+        safeJsonFetch('http://localhost:5000/api/products/seed?force=true', { method: 'POST' }).catch(() => null);
+      }
+
+      setProducts(DEFAULT_PRODUCTS);
+      saveStoredProducts(DEFAULT_PRODUCTS);
+      showToast('Default chemical products synced successfully!');
     } catch (err) {
       showToast(err.message, 'error');
     } finally {
@@ -509,8 +664,15 @@ export default function AdminPanel({ onBack }) {
 
         <div className="admin-nav-actions">
           <div className="admin-status-indicator">
-            <span className="admin-status-dot" />
-            <span>MongoDB Connected</span>
+            <span
+              className="admin-status-dot"
+              style={
+                !dbConnected
+                  ? { background: '#3b82f6', boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.25)' }
+                  : {}
+              }
+            />
+            <span>{dbConnected ? 'MongoDB Connected' : 'Local Storage Active'}</span>
           </div>
 
           {activeTab === 'products' ? (

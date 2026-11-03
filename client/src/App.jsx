@@ -528,32 +528,62 @@ export default function App() {
     try {
       let res = await fetch('/api/products').catch(() => null);
       if (!res || !res.ok) {
-        res = await fetch('http://localhost:5000/api/products');
+        res = await fetch('http://localhost:5000/api/products').catch(() => null);
       }
-      if (res.ok) {
+      if (res && res.ok && res.headers.get('content-type')?.includes('application/json')) {
         const data = await res.json();
         // Live site only shows published products
         const active = data.filter((p) => p.published !== false);
         setDbProducts(active);
+        try {
+          localStorage.setItem('shivtek_products_db', JSON.stringify(data));
+        } catch (e) {}
+        return;
       }
     } catch (err) {
-      console.warn('Backend not reachable, using fallback catalogue:', err);
+      console.warn('Backend not reachable, checking local storage:', err);
     }
+
+    try {
+      const raw = localStorage.getItem('shivtek_products_db');
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (Array.isArray(data) && data.length > 0) {
+          const active = data.filter((p) => p.published !== false);
+          setDbProducts(active);
+          return;
+        }
+      }
+    } catch (e) {}
+
+    setDbProducts(fallbackProducts);
   };
 
   const fetchSiteContent = async () => {
     try {
       let res = await fetch('/api/content').catch(() => null);
       if (!res || !res.ok) {
-        res = await fetch('http://localhost:5000/api/content');
+        res = await fetch('http://localhost:5000/api/content').catch(() => null);
       }
-      if (res.ok) {
+      if (res && res.ok && res.headers.get('content-type')?.includes('application/json')) {
         const data = await res.json();
         setSiteContent(data);
+        try {
+          localStorage.setItem('shivtek_site_content_db', JSON.stringify(data));
+        } catch (e) {}
+        return;
       }
     } catch (err) {
-      console.warn('Backend not reachable for site content, using fallbacks:', err);
+      console.warn('Backend not reachable for site content, checking local storage:', err);
     }
+
+    try {
+      const raw = localStorage.getItem('shivtek_site_content_db');
+      if (raw) {
+        const data = JSON.parse(raw);
+        if (data) setSiteContent(data);
+      }
+    } catch (e) {}
   };
 
   useEffect(() => {
