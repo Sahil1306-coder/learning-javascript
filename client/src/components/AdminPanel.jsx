@@ -1318,7 +1318,7 @@ export default function AdminPanel({ onBack }) {
               </button>
             </div>
 
-            <form onSubmit={handleFormSubmit}>
+            <form className="admin-modal-form" onSubmit={handleFormSubmit}>
               <div className="admin-modal-body">
                 {/* Form Inputs (Left side) */}
                 <div className="admin-form-fields">
