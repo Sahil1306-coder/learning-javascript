@@ -52,8 +52,8 @@
 }
 
 .admin-badge-role {
-  background: #0f4c3a;
-  color: #a7f3d0;
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  color: #ffffff !important;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.05em;
@@ -570,9 +570,9 @@
 }
 
 .preset-chip-btn.active {
-  background: #0f4c3a;
-  color: #ffffff;
-  border-color: #0f4c3a;
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  color: #ffffff !important;
+  border-color: #3380FE !important;
 }
 
 /* Live Card Preview in Modal */
@@ -854,10 +854,10 @@ input:checked + .slider:before {
 }
 
 .admin-cms-nav-item.active {
-  background: #0f4c3a;
-  color: #ffffff;
-  border-color: #0f4c3a;
-  box-shadow: 0 4px 12px rgba(15, 76, 58, 0.25);
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  color: #ffffff !important;
+  border-color: #3380FE !important;
+  box-shadow: 0 4px 12px rgba(0, 97, 254, 0.25) !important;
 }
 
 .admin-cms-pane {
