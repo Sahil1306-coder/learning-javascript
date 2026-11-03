@@ -198,6 +198,26 @@
   flex: 1;
   min-width: 260px;
   max-width: 420px;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-search-box:focus-within {
+  border-color: #0061FE;
+  box-shadow: 0 0 0 3px rgba(0, 97, 254, 0.12);
+}
+
+.admin-search-icon-svg {
+  width: 15px;
+  height: 15px;
+  color: #64748b;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  transition: color 0.2s ease;
+}
+
+.admin-search-box:focus-within .admin-search-icon-svg {
+  color: #0061FE;
 }
 
 .admin-search-box input {
