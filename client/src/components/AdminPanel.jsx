@@ -1324,7 +1324,7 @@ export default function AdminPanel({ onBack }) {
                 <div className="admin-form-fields">
                   <div className="admin-form-group">
                     <label>
-                      Product Brand Name <span>*</span>
+                      Product Brand Name <span className="req-star">*</span>
                     </label>
                     <input
                       type="text"
@@ -1353,7 +1353,7 @@ export default function AdminPanel({ onBack }) {
 
                   <div className="admin-form-group">
                     <label>
-                      Industry / Category <span>*</span>
+                      Industry / Category <span className="req-star">*</span>
                     </label>
                     <select
                       className="admin-input"
@@ -1426,8 +1426,8 @@ export default function AdminPanel({ onBack }) {
                     />
                   </div>
 
-                  <div className="admin-form-group">
-                    <div className="admin-toggle-card">
+                  <div className="admin-toggle-field">
+                    <div className={`admin-toggle-card ${formData.published ? 'is-published' : ''}`}>
                       <label className="switch-label">
                         <span className="switch-toggle">
                           <input
@@ -1443,8 +1443,17 @@ export default function AdminPanel({ onBack }) {
                           <span className="slider" />
                         </span>
                         <div className="switch-text-wrap">
-                          <span className="switch-title">Publish on Website Immediately</span>
-                          <span className="switch-desc">Make this product live for buyers across catalog and search</span>
+                          <div className="switch-title-row">
+                            <span className="switch-title">Publish on Website Immediately</span>
+                            <span className={`switch-status-pill ${formData.published ? 'pill-active' : 'pill-draft'}`}>
+                              {formData.published ? '● Live on Site' : '○ Draft Only'}
+                            </span>
+                          </div>
+                          <span className="switch-desc">
+                            {formData.published
+                              ? 'Active and visible immediately to buyers across catalog & search'
+                              : 'Saved as draft — hidden from website until you choose to publish'}
+                          </span>
                         </div>
                       </label>
                     </div>
