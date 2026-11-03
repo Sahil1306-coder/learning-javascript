@@ -285,6 +285,9 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
   transition: all 0.2s;
   box-shadow: 0 2px 6px rgba(0, 97, 254, 0.2);
 }
