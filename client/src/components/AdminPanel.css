@@ -785,9 +785,14 @@ input:checked + .slider:before {
 }
 
 .admin-nav-tab.active {
-  background: #ffffff;
-  color: #0f4c3a;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  background: linear-gradient(180deg, #3380FE 0%, #0061FE 100%) !important;
+  color: #ffffff !important;
+  box-shadow: 0 2px 6px rgba(0, 97, 254, 0.25);
+}
+
+.admin-nav-tab.active .admin-tab-count {
+  background: rgba(255, 255, 255, 0.25);
+  color: #ffffff;
 }
 
 .admin-tab-count {
