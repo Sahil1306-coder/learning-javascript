@@ -519,7 +519,19 @@ export default function AdminPanel({ onBack }) {
               className="admin-btn-primary"
               onClick={openCreateModal}
             >
-              <span>+</span>
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 512 512"
+                fill="currentColor"
+                aria-hidden="true"
+                style={{ flexShrink: 0 }}
+              >
+                <path
+                  d="M492 236H276V20c0-11.046-8.954-20-20-20s-20 8.954-20 20v216H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h216v216c0 11.046 8.954 20 20 20s20-8.954 20-20V276h216c11.046 0 20-8.954 20-20s-8.954-20-20-20"
+                  fill="currentColor"
+                />
+              </svg>
               <span>Add Product</span>
             </button>
           ) : (
@@ -688,7 +700,19 @@ export default function AdminPanel({ onBack }) {
                   className="admin-btn-primary"
                   onClick={openCreateModal}
                 >
-                  <span>+</span>
+                  <svg
+                    width="14"
+                    height="14"
+                    viewBox="0 0 512 512"
+                    fill="currentColor"
+                    aria-hidden="true"
+                    style={{ flexShrink: 0 }}
+                  >
+                    <path
+                      d="M492 236H276V20c0-11.046-8.954-20-20-20s-20 8.954-20 20v216H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h216v216c0 11.046 8.954 20 20 20s20-8.954 20-20V276h216c11.046 0 20-8.954 20-20s-8.954-20-20-20"
+                      fill="currentColor"
+                    />
+                  </svg>
                   <span>Add New Product</span>
                 </button>
               </div>
@@ -733,7 +757,20 @@ export default function AdminPanel({ onBack }) {
                     style={{ marginTop: '14px' }}
                     onClick={openCreateModal}
                   >
-                    + Add Product Now
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 512 512"
+                      fill="currentColor"
+                      aria-hidden="true"
+                      style={{ flexShrink: 0 }}
+                    >
+                      <path
+                        d="M492 236H276V20c0-11.046-8.954-20-20-20s-20 8.954-20 20v216H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h216v216c0 11.046 8.954 20 20 20s20-8.954 20-20V276h216c11.046 0 20-8.954 20-20s-8.954-20-20-20"
+                        fill="currentColor"
+                      />
+                    </svg>
+                    <span>Add Product Now</span>
                   </button>
                 </div>
               ) : (
@@ -1044,7 +1081,20 @@ export default function AdminPanel({ onBack }) {
                         <p>Manage customer reviews, testimonials, company names, and design accent colors displayed on the homepage slider.</p>
                       </div>
                       <button type="button" className="admin-btn-primary" onClick={addStory}>
-                        + Add Story
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 512 512"
+                          fill="currentColor"
+                          aria-hidden="true"
+                          style={{ flexShrink: 0 }}
+                        >
+                          <path
+                            d="M492 236H276V20c0-11.046-8.954-20-20-20s-20 8.954-20 20v216H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h216v216c0 11.046 8.954 20 20 20s20-8.954 20-20V276h216c11.046 0 20-8.954 20-20s-8.954-20-20-20"
+                            fill="currentColor"
+                          />
+                        </svg>
+                        <span>Add Story</span>
                       </button>
                     </div>
 
@@ -1141,7 +1191,20 @@ export default function AdminPanel({ onBack }) {
                         <p>Manage the interactive accordion questions and answers displayed in the contact section.</p>
                       </div>
                       <button type="button" className="admin-btn-primary" onClick={addFaq}>
-                        + Add FAQ
+                        <svg
+                          width="14"
+                          height="14"
+                          viewBox="0 0 512 512"
+                          fill="currentColor"
+                          aria-hidden="true"
+                          style={{ flexShrink: 0 }}
+                        >
+                          <path
+                            d="M492 236H276V20c0-11.046-8.954-20-20-20s-20 8.954-20 20v216H20c-11.046 0-20 8.954-20 20s8.954 20 20 20h216v216c0 11.046 8.954 20 20 20s20-8.954 20-20V276h216c11.046 0 20-8.954 20-20s-8.954-20-20-20"
+                            fill="currentColor"
+                          />
+                        </svg>
+                        <span>Add FAQ</span>
                       </button>
                     </div>
 
